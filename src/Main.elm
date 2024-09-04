@@ -4,8 +4,8 @@ import Browser
 import Browser.Events
 import Css
 import Css.Global exposing (body, global, html)
-import GridFormat exposing (CellGrid, add_row, add_column, remove_row, remove_column, grid_to_list_of_stats, standard_grid, grid_to_string)
-import CellTheme exposing (cell_colour)
+import TileGrid exposing (TileGrid, add_row, add_column, remove_row, remove_column, grid_to_list_of_stats, standard_grid, grid_to_string)
+import TileTheme exposing (cell_colour)
 import Html.Styled
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
@@ -19,7 +19,7 @@ import Platform.Cmd as Cmd
 port sendMessage : String -> Cmd msg
 
 type alias Model =
-    { hover_colour : Css.Color, current_grid : CellGrid, svg_cell_size : Int }
+    { hover_colour : Css.Color, current_grid : TileGrid, svg_cell_size : Int }
 
 
 type Msg

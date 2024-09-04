@@ -5438,7 +5438,7 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
-var $author$project$GridFormat$is_level_string = function (try_str) {
+var $author$project$CellGrid$is_level_string = function (try_str) {
 	var pieces = A2($elm$core$String$split, ';', try_str);
 	var ppieces = A2($elm$core$List$take, 3, pieces);
 	var row_string = A2(
@@ -5480,14 +5480,14 @@ var $author$project$GridFormat$is_level_string = function (try_str) {
 		$elm$core$Maybe$Nothing);
 	return length_okay && (row_length_okay && (col_length_okay && lvl_string_okay));
 };
-var $author$project$GridFormat$standard_grid_string = '7;7;_______0_....._0_....._0_....._0_....._0_....._0_______0';
-var $author$project$GridFormat$Blocker = 0;
-var $author$project$GridFormat$EarthFloor = 3;
-var $author$project$GridFormat$EarthWall = 1;
-var $author$project$GridFormat$StoneFloor = 4;
-var $author$project$GridFormat$StoneWall = 2;
-var $author$project$GridFormat$Void = 5;
-var $author$project$GridFormat$char_to_type = function (c) {
+var $author$project$CellGrid$standard_grid_string = '7;7;_______0_....._0_....._0_....._0_....._0_....._0_______0';
+var $author$project$TileType$Blocker = 0;
+var $author$project$TileType$EarthFloor = 3;
+var $author$project$TileType$EarthWall = 1;
+var $author$project$TileType$StoneFloor = 4;
+var $author$project$TileType$StoneWall = 2;
+var $author$project$TileType$Void = 5;
+var $author$project$TileType$char_to_type = function (c) {
 	switch (c) {
 		case '_':
 			return 0;
@@ -5550,11 +5550,11 @@ var $elm$core$String$foldr = _String_foldr;
 var $elm$core$String$toList = function (string) {
 	return A3($elm$core$String$foldr, $elm$core$List$cons, _List_Nil, string);
 };
-var $author$project$GridFormat$is_valid_char = function (c) {
+var $author$project$CellGrid$is_valid_char = function (c) {
 	return A2(
 		$elm$core$List$member,
 		c,
-		$elm$core$String$toList('_Xxo. '));
+		$elm$core$String$toList('_Xxo.+'));
 };
 var $elm$core$Basics$min = F2(
 	function (x, y) {
@@ -5570,7 +5570,7 @@ var $elm$core$List$minimum = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$GridFormat$listed_local_cells_to_grid = function (l) {
+var $author$project$CellGrid$listed_local_cells_to_grid = function (l) {
 	var min_row_length = A2(
 		$elm$core$Maybe$withDefault,
 		0,
@@ -5586,17 +5586,17 @@ var $author$project$GridFormat$listed_local_cells_to_grid = function (l) {
 		L: min_row_length
 	};
 };
-var $author$project$GridFormat$LocalCell = F3(
+var $author$project$CellGrid$LocalCell = F3(
 	function (cell_type, row_ix, col_ix) {
 		return {a3: cell_type, br: col_ix, bT: row_ix};
 	});
-var $author$project$GridFormat$tuple_to_local_cell = function (_v0) {
+var $author$project$CellGrid$tuple_to_local_cell = function (_v0) {
 	var i = _v0.a;
 	var j = _v0.b;
 	var c = _v0.c;
-	return A3($author$project$GridFormat$LocalCell, c, i, j);
+	return A3($author$project$CellGrid$LocalCell, c, i, j);
 };
-var $author$project$GridFormat$zip = F2(
+var $author$project$CellGrid$zip = F2(
 	function (l, r) {
 		return A3(
 			$elm$core$List$map2,
@@ -5607,7 +5607,7 @@ var $author$project$GridFormat$zip = F2(
 			l,
 			r);
 	});
-var $author$project$GridFormat$localise_listed_cells = function (ll) {
+var $author$project$CellGrid$localise_listed_cells = function (ll) {
 	var standard_row = A2(
 		$elm$core$Maybe$withDefault,
 		_List_Nil,
@@ -5625,7 +5625,7 @@ var $author$project$GridFormat$localise_listed_cells = function (ll) {
 		$elm$core$List$length(standard_row));
 	var j_ed_rows = A2(
 		$elm$core$List$map,
-		$author$project$GridFormat$zip(col_numbers),
+		$author$project$CellGrid$zip(col_numbers),
 		ll);
 	var ij_ed_rows = A3(
 		$elm$core$List$map2,
@@ -5636,7 +5636,7 @@ var $author$project$GridFormat$localise_listed_cells = function (ll) {
 					function (_v0) {
 						var j = _v0.a;
 						var x = _v0.b;
-						return $author$project$GridFormat$tuple_to_local_cell(
+						return $author$project$CellGrid$tuple_to_local_cell(
 							_Utils_Tuple3(i, j, x));
 					},
 					j_row);
@@ -5666,7 +5666,7 @@ var $elm$core$List$drop = F2(
 			}
 		}
 	});
-var $author$project$GridFormat$take_often = F2(
+var $author$project$CellGrid$take_often = F2(
 	function (n, l) {
 		return (_Utils_cmp(
 			$elm$core$List$length(l),
@@ -5674,11 +5674,11 @@ var $author$project$GridFormat$take_often = F2(
 			$elm$core$List$cons,
 			A2($elm$core$List$take, n, l),
 			A2(
-				$author$project$GridFormat$take_often,
+				$author$project$CellGrid$take_often,
 				n,
 				A2($elm$core$List$drop, n, l)));
 	});
-var $author$project$GridFormat$string_to_grid = function (raw_s) {
+var $author$project$CellGrid$string_to_grid = function (raw_s) {
 	var s_parts = $elm$core$Array$fromList(
 		A2($elm$core$String$split, ';', raw_s));
 	var s = A2(
@@ -5701,30 +5701,30 @@ var $author$project$GridFormat$string_to_grid = function (raw_s) {
 				$elm$core$Maybe$withDefault,
 				'0',
 				A2($elm$core$Array$get, 1, s_parts))));
-	var fully_typed_grid = $author$project$GridFormat$listed_local_cells_to_grid(
-		$author$project$GridFormat$localise_listed_cells(
+	var fully_typed_grid = $author$project$CellGrid$listed_local_cells_to_grid(
+		$author$project$CellGrid$localise_listed_cells(
 			A2(
 				$elm$core$List$take,
 				row_count,
 				A2(
-					$author$project$GridFormat$take_often,
+					$author$project$CellGrid$take_often,
 					col_count,
 					A2(
 						$elm$core$List$map,
-						$author$project$GridFormat$char_to_type,
+						$author$project$TileType$char_to_type,
 						A2(
 							$elm$core$List$filter,
-							$author$project$GridFormat$is_valid_char,
+							$author$project$CellGrid$is_valid_char,
 							$elm$core$String$toList(s)))))));
 	return fully_typed_grid;
 };
-var $author$project$GridFormat$standard_grid = function (try_str) {
-	return $author$project$GridFormat$is_level_string(try_str) ? $author$project$GridFormat$string_to_grid(try_str) : $author$project$GridFormat$string_to_grid($author$project$GridFormat$standard_grid_string);
+var $author$project$CellGrid$standard_grid = function (try_str) {
+	return $author$project$CellGrid$is_level_string(try_str) ? $author$project$CellGrid$string_to_grid(try_str) : $author$project$CellGrid$string_to_grid($author$project$CellGrid$standard_grid_string);
 };
 var $author$project$Main$init = function (level_string) {
 	return _Utils_Tuple2(
 		{
-			p: $author$project$GridFormat$standard_grid(level_string),
+			p: $author$project$CellGrid$standard_grid(level_string),
 			aA: A4($rtfeldman$elm_css$Css$rgba, 255, 0, 0, 0.2),
 			an: 60
 		},
@@ -6940,6 +6940,7 @@ var $rtfeldman$elm_css$VirtualDom$Styled$toUnstyled = function (vdom) {
 	}
 };
 var $rtfeldman$elm_css$Html$Styled$toUnstyled = $rtfeldman$elm_css$VirtualDom$Styled$toUnstyled;
+var $author$project$TileType$blocker_type = 0;
 var $elm$core$List$head = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -6949,7 +6950,7 @@ var $elm$core$List$head = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$GridFormat$add_column = function (grid) {
+var $author$project$CellGrid$add_column = function (grid) {
 	var new_col_count = $elm$core$List$length(
 		A2(
 			$elm$core$Maybe$withDefault,
@@ -6963,7 +6964,7 @@ var $author$project$GridFormat$add_column = function (grid) {
 					row,
 					_List_fromArray(
 						[
-							A3($author$project$GridFormat$LocalCell, 0, i, new_col_count)
+							A3($author$project$CellGrid$LocalCell, $author$project$TileType$blocker_type, i, new_col_count)
 						]));
 			}),
 		A2(
@@ -6994,14 +6995,14 @@ var $elm$core$List$repeat = F2(
 	function (n, value) {
 		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
 	});
-var $author$project$GridFormat$add_row = function (grid) {
-	var new_row_types = A2($elm$core$List$repeat, grid.y, 0);
+var $author$project$CellGrid$add_row = function (grid) {
+	var new_row_types = A2($elm$core$List$repeat, grid.y, $author$project$TileType$blocker_type);
 	var new_row_count = $elm$core$List$length(grid.f) + 1;
 	var new_row = A3(
 		$elm$core$List$map2,
 		F2(
 			function (c, i) {
-				return A3($author$project$GridFormat$LocalCell, c, new_row_count, i);
+				return A3($author$project$CellGrid$LocalCell, c, new_row_count, i);
 			}),
 		new_row_types,
 		A2(
@@ -7029,7 +7030,7 @@ var $elm$core$List$append = F2(
 var $elm$core$List$concat = function (lists) {
 	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
 };
-var $author$project$GridFormat$type_to_char = function (c) {
+var $author$project$TileType$type_to_char = function (c) {
 	switch (c) {
 		case 0:
 			return '_';
@@ -7045,11 +7046,11 @@ var $author$project$GridFormat$type_to_char = function (c) {
 			return '+';
 	}
 };
-var $author$project$GridFormat$grid_to_string = function (cell_grid) {
+var $author$project$CellGrid$grid_to_string = function (cell_grid) {
 	var s = $elm$core$String$fromList(
 		A2(
 			$elm$core$List$map,
-			$author$project$GridFormat$type_to_char,
+			$author$project$TileType$type_to_char,
 			A2(
 				$elm$core$List$map,
 				function ($) {
@@ -7066,7 +7067,7 @@ var $author$project$GridFormat$grid_to_string = function (cell_grid) {
 				$elm$core$List$head(cell_grid.f))));
 	return row_count + (';' + (col_count + (';' + s)));
 };
-var $author$project$GridFormat$remove_column = function (grid) {
+var $author$project$CellGrid$remove_column = function (grid) {
 	var new_col_count = $elm$core$List$length(
 		A2(
 			$elm$core$Maybe$withDefault,
@@ -7078,7 +7079,7 @@ var $author$project$GridFormat$remove_column = function (grid) {
 		grid.f);
 	return {f: new_rows, y: new_col_count, L: grid.L};
 };
-var $author$project$GridFormat$remove_row = function (grid) {
+var $author$project$CellGrid$remove_row = function (grid) {
 	var new_row_count = $elm$core$List$length(grid.f) - 1;
 	var cells = A2($elm$core$List$take, new_row_count, grid.f);
 	return {f: cells, y: grid.y, L: new_row_count};
@@ -7107,7 +7108,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							p: $author$project$GridFormat$add_row(model.p)
+							p: $author$project$CellGrid$add_row(model.p)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 3:
@@ -7115,7 +7116,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							p: $author$project$GridFormat$add_column(model.p)
+							p: $author$project$CellGrid$add_column(model.p)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 4:
@@ -7123,7 +7124,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							p: $author$project$GridFormat$remove_row(model.p)
+							p: $author$project$CellGrid$remove_row(model.p)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 5:
@@ -7131,14 +7132,14 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							p: $author$project$GridFormat$remove_column(model.p)
+							p: $author$project$CellGrid$remove_column(model.p)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 6:
 				return _Utils_Tuple2(
 					model,
 					$author$project$Main$sendMessage(
-						$author$project$GridFormat$grid_to_string(model.p)));
+						$author$project$CellGrid$grid_to_string(model.p)));
 			default:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
@@ -9042,8 +9043,25 @@ var $rtfeldman$elm_css$Css$rgb = F3(
 	});
 var $rtfeldman$elm_css$Css$right = $rtfeldman$elm_css$Css$prop1('right');
 var $rtfeldman$elm_css$Css$smallCaps = {d: 0, ae: 0, C: 'small-caps'};
-var $author$project$Main$draft_colour = function (i) {
-	switch (i) {
+var $author$project$TileType$index_cell_type = function (c) {
+	switch (c) {
+		case 0:
+			return 0;
+		case 2:
+			return 1;
+		case 1:
+			return 2;
+		case 4:
+			return 3;
+		case 3:
+			return 4;
+		default:
+			return 5;
+	}
+};
+var $author$project$CellTheme$cell_colour = function (i) {
+	var _v0 = $author$project$TileType$index_cell_type(i);
+	switch (_v0) {
 		case 0:
 			return '#111';
 		case 1:
@@ -9070,7 +9088,7 @@ var $rtfeldman$elm_css$VirtualDom$Styled$attribute = F2(
 			'');
 	});
 var $rtfeldman$elm_css$Svg$Styled$Attributes$fill = $rtfeldman$elm_css$VirtualDom$Styled$attribute('fill');
-var $author$project$GridFormat$grid_to_list_of_stats = function (grid) {
+var $author$project$CellGrid$grid_to_list_of_stats = function (grid) {
 	return A2(
 		$elm$core$List$map,
 		function (c) {
@@ -9079,22 +9097,6 @@ var $author$project$GridFormat$grid_to_list_of_stats = function (grid) {
 		$elm$core$List$concat(grid.f));
 };
 var $rtfeldman$elm_css$Svg$Styled$Attributes$height = $rtfeldman$elm_css$VirtualDom$Styled$attribute('height');
-var $author$project$GridFormat$index_cell_type = function (c) {
-	switch (c) {
-		case 0:
-			return 0;
-		case 2:
-			return 1;
-		case 1:
-			return 2;
-		case 4:
-			return 3;
-		case 3:
-			return 4;
-		default:
-			return 5;
-	}
-};
 var $rtfeldman$elm_css$VirtualDom$Styled$NodeNS = F4(
 	function (a, b, c, d) {
 		return {$: 1, a: a, b: b, c: c, d: d};
@@ -9152,10 +9154,9 @@ var $author$project$Main$standard_svg_grid = function (model) {
 			return _Utils_Tuple3(
 				a,
 				b,
-				$author$project$Main$draft_colour(
-					$author$project$GridFormat$index_cell_type(c)));
+				$author$project$CellTheme$cell_colour(c));
 		},
-		$author$project$GridFormat$grid_to_list_of_stats(model.p));
+		$author$project$CellGrid$grid_to_list_of_stats(model.p));
 	var cells = A2(
 		$elm$core$List$map,
 		function (_v0) {

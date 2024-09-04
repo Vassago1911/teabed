@@ -1,7 +1,7 @@
-module CellType exposing (CellType, blocker_type, index_cell_type, char_to_type, type_to_char)
+module TileType exposing (TileSymbol, blocker_type, index_cell_type, char_to_type, type_to_char)
 
 
-type CellType
+type TileSymbol
     = Blocker
     | EarthWall
     | StoneWall
@@ -9,10 +9,10 @@ type CellType
     | StoneFloor
     | Void
 
-blocker_type : CellType
+blocker_type : TileSymbol
 blocker_type = Blocker
 
-index_cell_type : CellType -> Int
+index_cell_type : TileSymbol -> Int
 index_cell_type c =
     case c of
         Blocker ->
@@ -33,7 +33,7 @@ index_cell_type c =
         Void ->
             5
 
-char_to_type : Char -> CellType
+char_to_type : Char -> TileSymbol
 char_to_type c =
     case c of
         '_' ->
@@ -58,7 +58,7 @@ char_to_type c =
             Void
 
 
-type_to_char : CellType -> Char
+type_to_char : TileSymbol -> Char
 type_to_char c =
     case c of
         Blocker ->

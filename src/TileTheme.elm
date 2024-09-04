@@ -1,8 +1,8 @@
-module CellTheme exposing (cell_colour)
+module TileTheme exposing (cell_colour)
 
-import CellType exposing (CellType,index_cell_type)
+import TileType exposing (TileSymbol,index_cell_type)
 
-cell_colour : CellType -> String
+cell_colour : TileSymbol -> String
 cell_colour i =
     case index_cell_type i of
         0 ->

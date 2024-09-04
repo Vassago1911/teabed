@@ -1,9 +1,9 @@
-module GridFormat exposing (CellGrid, add_row, add_column, remove_row, remove_column, grid_to_list_of_stats, grid_to_string, standard_grid)
+module TileGrid exposing (TileGrid, add_row, add_column, remove_row, remove_column, grid_to_list_of_stats, grid_to_string, standard_grid)
 
 import Array
-import CellType exposing (CellType, blocker_type, char_to_type, type_to_char)
+import TileType exposing (TileSymbol, blocker_type, char_to_type, type_to_char)
 
-add_row : CellGrid -> CellGrid
+add_row : TileGrid -> TileGrid
 add_row grid = 
     let
         new_row_count = List.length grid.cells + 1
@@ -20,7 +20,7 @@ add_row grid =
     in    
     {cells = cells, row_count = new_row_count, col_count = grid.col_count}
 
-add_column : CellGrid -> CellGrid
+add_column : TileGrid -> TileGrid
 add_column grid = 
     let 
         new_col_count = ((List.length (List.head grid.cells |> Maybe.withDefault [])) + 1 )
@@ -29,7 +29,7 @@ add_column grid =
     in 
     { cells = new_rows, row_count = grid.row_count, col_count = new_col_count}
 
-remove_row : CellGrid -> CellGrid
+remove_row : TileGrid -> TileGrid
 remove_row grid = 
     let
         new_row_count = List.length grid.cells - 1
@@ -37,7 +37,7 @@ remove_row grid =
     in    
         { cells = cells, row_count = new_row_count, col_count = grid.col_count }
 
-remove_column : CellGrid -> CellGrid
+remove_column : TileGrid -> TileGrid
 remove_column grid = 
     let 
         new_col_count = ((List.length (List.head grid.cells |> Maybe.withDefault [])) - 1 )
@@ -48,25 +48,25 @@ remove_column grid =
 
 
 type alias LocalCell =
-    { cell_type : CellType
+    { cell_type : TileSymbol
     , row_ix : Int
     , col_ix : Int
     }
 
 
-type alias CellGrid =
+type alias TileGrid =
     { cells : List (List LocalCell)
     , row_count : Int
     , col_count : Int
     }
 
 
-grid_to_list_of_stats : CellGrid -> List ( Int, Int, CellType )
+grid_to_list_of_stats : TileGrid -> List ( Int, Int, TileSymbol )
 grid_to_list_of_stats grid =
     grid.cells |> List.concat |> List.map (\c -> ( c.row_ix, c.col_ix, c.cell_type ))
 
 
-standard_grid : String -> CellGrid
+standard_grid : String -> TileGrid
 standard_grid try_str =
     if is_level_string try_str then   
         --(Debug.log "DEBUG" try_str) |> string_to_grid
@@ -117,7 +117,7 @@ take_often n l =
         List.take n l :: take_often n (List.drop n l)
 
 
-tuple_to_local_cell : ( Int, Int, CellType ) -> LocalCell
+tuple_to_local_cell : ( Int, Int, TileSymbol ) -> LocalCell
 tuple_to_local_cell ( i, j, c ) =
     LocalCell c i j
 
@@ -127,7 +127,7 @@ zip l r =
     List.map2 (\i j -> ( i, j )) l r
 
 
-localise_listed_cells : List (List CellType) -> List (List LocalCell)
+localise_listed_cells : List (List TileSymbol) -> List (List LocalCell)
 localise_listed_cells ll =
     let
         row_numbers =
@@ -148,7 +148,7 @@ localise_listed_cells ll =
     ij_ed_rows
 
 
-listed_local_cells_to_grid : List (List LocalCell) -> CellGrid
+listed_local_cells_to_grid : List (List LocalCell) -> TileGrid
 listed_local_cells_to_grid l =
     let
         min_row_length =
@@ -161,7 +161,7 @@ listed_local_cells_to_grid l =
     { cells = ll, row_count = min_row_length, col_count = List.length l }
 
 
-string_to_grid : String -> CellGrid
+string_to_grid : String -> TileGrid
 string_to_grid raw_s =
     let
         s_parts =
@@ -188,7 +188,7 @@ string_to_grid raw_s =
     fully_typed_grid
 
 
-grid_to_string : CellGrid -> String
+grid_to_string : TileGrid -> String
 grid_to_string cell_grid =
     let
         row_count =
