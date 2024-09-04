@@ -1,37 +1,50 @@
-module GridFormat exposing (CellGrid, grid_to_list_of_stats, index_cell_type, px, py, standard_grid, standard_grid_string, string_to_grid)
+module GridFormat exposing (CellGrid, add_row, add_column, remove_row, remove_column, grid_to_list_of_stats, grid_to_string, standard_grid)
 
 import Array
+import CellType exposing (CellType, blocker_type, char_to_type, type_to_char)
 
+add_row : CellGrid -> CellGrid
+add_row grid = 
+    let
+        new_row_count = List.length grid.cells + 1
 
-type CellType
-    = Blocker
-    | EarthWall
-    | StoneWall
-    | EarthFloor
-    | StoneFloor
-    | Void
+        new_row_types = List.repeat grid.col_count blocker_type 
 
+        new_row = List.map2 
+                        (\c i -> LocalCell c new_row_count i ) 
+                        new_row_types
+                        (List.range 1 
+                                    ((List.length (List.head grid.cells |> Maybe.withDefault [])) + 1 )  ) 
 
-index_cell_type : CellType -> Int
-index_cell_type c =
-    case c of
-        Blocker ->
-            0
+        cells = grid.cells ++ [ new_row ]
+    in    
+    {cells = cells, row_count = new_row_count, col_count = grid.col_count}
 
-        StoneWall ->
-            1
+add_column : CellGrid -> CellGrid
+add_column grid = 
+    let 
+        new_col_count = ((List.length (List.head grid.cells |> Maybe.withDefault [])) + 1 )
 
-        EarthWall ->
-            2
+        new_rows = List.map2 (\i row -> row ++ [LocalCell blocker_type i new_col_count] ) (List.range 1 (List.length grid.cells + 1)) grid.cells
+    in 
+    { cells = new_rows, row_count = grid.row_count, col_count = new_col_count}
 
-        StoneFloor ->
-            3
+remove_row : CellGrid -> CellGrid
+remove_row grid = 
+    let
+        new_row_count = List.length grid.cells - 1
+        cells = List.take new_row_count grid.cells
+    in    
+        { cells = cells, row_count = new_row_count, col_count = grid.col_count }
 
-        EarthFloor ->
-            4
+remove_column : CellGrid -> CellGrid
+remove_column grid = 
+    let 
+        new_col_count = ((List.length (List.head grid.cells |> Maybe.withDefault [])) - 1 )
 
-        Void ->
-            5
+        new_rows = List.map (List.take new_col_count ) grid.cells
+    in 
+    { cells = new_rows, row_count = grid.row_count, col_count = new_col_count}
 
 
 type alias LocalCell =
@@ -53,76 +66,46 @@ grid_to_list_of_stats grid =
     grid.cells |> List.concat |> List.map (\c -> ( c.row_ix, c.col_ix, c.cell_type ))
 
 
-px : LocalCell -> Int
-px c =
-    c.row_ix
+standard_grid : String -> CellGrid
+standard_grid try_str =
+    if is_level_string try_str then   
+        --(Debug.log "DEBUG" try_str) |> string_to_grid
+        try_str |> string_to_grid
+    else 
+        string_to_grid standard_grid_string
 
+is_level_string : String -> Bool
+is_level_string try_str =
+    let
+        pieces = String.split ";" try_str
 
-py : LocalCell -> Int
-py c =
-    c.col_ix
+        length_okay = ( List.length pieces == 3 )
 
+        ppieces = List.take 3 pieces
 
-standard_grid : CellGrid
-standard_grid =
-    string_to_grid "7;7;_______0_....._0_....._0_....._0_....._0_....._0_______0"
+        row_string = ppieces |> Array.fromList |> Array.get 0 |> Maybe.withDefault "7"
 
+        col_string = ppieces |> Array.fromList |> Array.get 1 |> Maybe.withDefault "7"
+
+        lvl_string = ppieces |> Array.fromList |> Array.get 2 |> Maybe.withDefault ""
+
+        row_length_okay = ((String.toInt row_string ) /= Nothing )
+
+        col_length_okay = ((String.toInt col_string ) /= Nothing )
+
+        lvl_string_okay = (String.length lvl_string == (String.toInt col_string |> Maybe.withDefault 0)*(String.toInt row_string |> Maybe.withDefault 0))
+    in    
+    length_okay && row_length_okay && col_length_okay && lvl_string_okay
 
 standard_grid_string : String
 standard_grid_string =
-    grid_to_string standard_grid
+    "7;7;_______0_....._0_....._0_....._0_....._0_....._0_______0"
 
 
 is_valid_char : Char -> Bool
 is_valid_char c =
-    String.toList "_Xxo. " |> List.member c
+    String.toList "_Xxo.+" |> List.member c
 
-
-char_to_type : Char -> CellType
-char_to_type c =
-    case c of
-        '_' ->
-            Blocker
-
-        'X' ->
-            StoneWall
-
-        'x' ->
-            EarthWall
-
-        'o' ->
-            StoneFloor
-
-        '.' ->
-            EarthFloor
-
-        ' ' ->
-            Void
-
-        _ ->
-            Void
-
-
-type_to_char : CellType -> Char
-type_to_char c =
-    case c of
-        Blocker ->
-            '_'
-
-        StoneWall ->
-            'X'
-
-        EarthWall ->
-            'x'
-
-        StoneFloor ->
-            'o'
-
-        EarthFloor ->
-            '.'
-
-        Void ->
-            ' '
 
 
 take_often : Int -> List a -> List (List a)
